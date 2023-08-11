@@ -1,0 +1,29 @@
+server:
+  port: 8089
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+database:
+  url: postgresql://localhost:5432/todo-app
+  username: admin
+  password: admin
+
+spring:
+  r2dbc:
+    url: r2dbc:${database.url}
+    username: ${database.username}
+    password: ${database.password}
+  flyway-custom:
+    #    enabled: false
+    url: jdbc:${database.url}
+    username: ${database.username}
+    password: ${database.password}
+
+logging:
+  level:
+    org:
+      root: INFO
