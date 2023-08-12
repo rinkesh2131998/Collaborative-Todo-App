@@ -22,6 +22,7 @@ public class Todo {
   private OffsetDateTime updatedAt;;
 
   public Todo(final String description, final TodoStatus status) {
+    this.todoId = null;
     this.description = description;
     this.status = status;
   }
