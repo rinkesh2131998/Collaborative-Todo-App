@@ -18,16 +18,15 @@ public class Todo {
   private UUID todoId;
   private String description;
   private TodoStatus status;
-  private OffsetDateTime creationTimestamp;
-  private OffsetDateTime modifiedTimestamp;
+  private OffsetDateTime createdAt;
+  private OffsetDateTime updatedAt;;
 
-  public Todo(final UUID todoId, final String description, final TodoStatus status) {
-    this.todoId = todoId;
+  public Todo(final String description, final TodoStatus status) {
     this.description = description;
     this.status = status;
   }
 
-  private enum TodoStatus {
+  public enum TodoStatus {
     TODO, PROGRESS, COMPLETED
   }
 }
