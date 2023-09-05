@@ -25,6 +25,12 @@ export interface UpdateTodo {
      * @type {string}
      * @memberof UpdateTodo
      */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateTodo
+     */
     'description'?: string;
     /**
      * 

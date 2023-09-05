@@ -7,6 +7,7 @@ import com.project.todoapp.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.ast.Literal;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class TodoController {
   /**
    * used to fetch all to-do's.
    */
-  @GetMapping
+  @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public Flux<TodoResource> getAllTodos() {
     return todoService.getAllTodos();
   }
@@ -49,7 +50,7 @@ public class TodoController {
   /**
    * fetch a single to-do item by its id.
    */
-  @GetMapping("/{uuid}")
+  @GetMapping(value = "/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<TodoResource> getTodo(@RequestParam final String uuid) {
     return todoService.getTodoItemById(uuid);
   }

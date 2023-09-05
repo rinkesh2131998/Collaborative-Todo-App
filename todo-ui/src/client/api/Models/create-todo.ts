@@ -25,6 +25,12 @@ export interface CreateTodo {
      * @type {string}
      * @memberof CreateTodo
      */
-    'description'?: string;
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateTodo
+     */
+    'description': string;
 }
 

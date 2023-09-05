@@ -1,9 +1,10 @@
 package com.project.todoapp.dto;
 
-import lombok.Data;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * data class to request a new to-do item creation.
  */
-public record CreateTodo(String description) {
+public record CreateTodo(@NotNull String title, @NotNull String description) {
 }

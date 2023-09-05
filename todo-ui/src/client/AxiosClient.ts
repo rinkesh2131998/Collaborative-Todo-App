@@ -6,7 +6,7 @@ import axios from 'axios';
 import { TodoControllerApi } from './api/api';
 
 const axiosInstance = axios.create();
-const baseUrl = 'http://localhost:8089/';
+const baseUrl = 'http://localhost:8089';
 
 class AxiosClient {
 	TodoControllerApi: TodoControllerApi = new TodoControllerApi(undefined, baseUrl, axios);

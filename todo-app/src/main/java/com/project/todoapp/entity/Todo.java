@@ -16,13 +16,15 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Todo {
   @Id
   private UUID todoId;
+  private String title;
   private String description;
   private TodoStatus status;
   private OffsetDateTime createdAt;
-  private OffsetDateTime updatedAt;;
+  private OffsetDateTime updatedAt;
 
-  public Todo(final String description, final TodoStatus status) {
+  public Todo(final String title, final String description, final TodoStatus status) {
     this.todoId = null;
+    this.title = title;
     this.description = description;
     this.status = status;
   }

@@ -1,0 +1,17 @@
+.app-header {
+	color: #fff;
+	height: 8vh;
+	background-color: #e2e2e2;
+}
+
+.app-content {
+	color: #000;
+	height: 92vh;
+	background-color: #fff;
+	text-align: center;
+}
+
+.todo-card {
+	text-align: left;
+	margin: 10px;
+}

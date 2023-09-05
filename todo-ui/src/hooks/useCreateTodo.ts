@@ -29,3 +29,5 @@ const useCreateTodo = (): UseMutationResult<any, unknown, IVariable, any> => {
 		},
 	);
 };
+
+export default useCreateTodo;

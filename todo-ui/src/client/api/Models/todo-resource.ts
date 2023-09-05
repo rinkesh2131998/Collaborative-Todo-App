@@ -25,7 +25,13 @@ export interface TodoResource {
      * @type {string}
      * @memberof TodoResource
      */
-    'todoId'?: string;
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TodoResource
+     */
+    'title'?: string;
     /**
      * 
      * @type {string}

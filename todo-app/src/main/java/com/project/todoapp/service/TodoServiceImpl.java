@@ -26,7 +26,8 @@ public class TodoServiceImpl implements TodoService {
 
   @Override
   public Mono<TodoResource> createNewTodo(final CreateTodo createTodo) {
-    return todoRepository.save(new Todo(createTodo.description(), Todo.TodoStatus.TODO))
+    return todoRepository.save(
+            new Todo(createTodo.title(), createTodo.description(), Todo.TodoStatus.TODO))
         .map(this::convertToDto);
   }
 
@@ -43,7 +44,8 @@ public class TodoServiceImpl implements TodoService {
   @Override
   public Mono<TodoResource> updateTodoItem(final String uuid, final UpdateTodo updateTodo) {
     return todoRepository.findById(UUID.fromString(uuid))
-        .switchIfEmpty(Mono.error(new TodoItemNotFoundException(String.format("Unable to find todo with id: %s", uuid))))
+        .switchIfEmpty(Mono.error(
+            new TodoItemNotFoundException(String.format("Unable to find todo with id: %s", uuid))))
         .flatMap(todo -> {
           todo.setDescription(updateTodo.description());
           todo.setStatus(updateTodo.todoStatus());
@@ -56,13 +58,15 @@ public class TodoServiceImpl implements TodoService {
   @Override
   public Mono<Void> deleteTodoItem(final String uuid) {
     return todoRepository.findById(UUID.fromString(uuid))
-        .switchIfEmpty(Mono.error(new TodoItemNotFoundException(String.format("Unable to find todo with id: %s", uuid))))
+        .switchIfEmpty(Mono.error(
+            new TodoItemNotFoundException(String.format("Unable to find todo with id: %s", uuid))))
         .flatMap(todoRepository::delete);
   }
 
   private TodoResource convertToDto(final Todo todo) {
     return TodoResource.builder()
-        .todoId(todo.getTodoId())
+        .id(todo.getTodoId())
+        .title(todo.getTitle())
         .description(todo.getDescription())
         .status(todo.getStatus())
         .createdAt(todo.getCreatedAt())
