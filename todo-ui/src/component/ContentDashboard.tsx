@@ -3,18 +3,44 @@
  * @description the content with todo's.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
-import { Typography } from 'antd';
+import { Typography, message as antdMessage } from 'antd';
 
 import DynamicTodo from './DynamicTodo';
 import TodoCard from './TodoCard';
-import { Columns, TodoColumns, mapTodoStatusToColumnKey } from '../config/application-config';
-import { TodoResource } from '../client/api';
+import { Columns, mapColumnKeyToTodoStatus, mapTodoStatusToColumnKey } from '../config/application-config';
+import { TodoResource, UpdateTodo } from '../client/api';
+import useUpdateTodo from '../hooks/useUpdateTodo';
 
-const ContentDashboard: React.FC = () => {
-	const [columns, setColumns] = useState<Columns>(TodoColumns);
+const todoColumns: Columns = {
+	todo: {
+		title: 'To Do',
+		items: [],
+	},
+	inProgress: {
+		title: 'In Progress',
+		items: [],
+	},
+	completed: {
+		title: 'Completed',
+		items: [],
+	},
+};
+
+interface IProps {
+	refreshCount: number;
+}
+
+const ContentDashboard: React.FC<IProps> = ({ refreshCount }) => {
+	const [columns, setColumns] = useState<Columns>(todoColumns);
+	const updateTodo = useUpdateTodo();
+
+	useEffect(() => {
+		_.forEach(todoColumns, (item) => (item.items = []));
+		setColumns(todoColumns);
+	}, [refreshCount]);
 
 	const addTodoToColumn = (columnId: keyof Columns, todo: any) => {
 		setColumns((prevColumns) => {
@@ -29,6 +55,33 @@ const ContentDashboard: React.FC = () => {
 		addTodoToColumn(columnId, todo);
 	};
 
+	const handleTodoUpdate = (updatedTodoState: string, todo: TodoResource): boolean => {
+		const todoStatus = mapColumnKeyToTodoStatus(updatedTodoState);
+		if (todoStatus === undefined) {
+			antdMessage.error('Unable to move item');
+			return false;
+		}
+
+		const updateTodoPayload = {
+			title: todo.title,
+			description: todo.description,
+			todoStatus,
+		};
+		let response: boolean = true;
+		updateTodo.mutate(
+			{ uuid: todo.id, updateTodo: updateTodoPayload },
+			{
+				onSuccess: () => {
+					response = true;
+				},
+				onError: () => {
+					response = false;
+				},
+			},
+		);
+		return response;
+	};
+
 	const onDragEnd = (result: DropResult, columns: any, setColumns: any) => {
 		if (!result.destination) return;
 
@@ -41,6 +94,10 @@ const ContentDashboard: React.FC = () => {
 		if (source.droppableId == destination.droppableId) {
 			sourceItems.splice(destination.index, 0, removed);
 		} else {
+			if (!handleTodoUpdate(destination.droppableId, removed)) {
+				return;
+			}
+
 			const destColumn = columns[destination.droppableId];
 			const destItems = [...destColumn.items];
 
@@ -63,7 +120,7 @@ const ContentDashboard: React.FC = () => {
 
 	return (
 		<DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
-			<DynamicTodo onTodoFetch={handleTodoReceived} />
+			<DynamicTodo onTodoFetch={handleTodoReceived} reloadTodos={refreshCount} />
 			<div className='task-container'>
 				<div className='task-columns'>
 					{_.map(columns, (column: any, columnId: any) => (

@@ -3,11 +3,12 @@
  * @description card to render todo's.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { TodoResource } from '../client/api';
 import { Button, Card, Space, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Draggable } from 'react-beautiful-dnd';
+import UpdateTodoModal from '../modal/UpdateTodoModal';
 
 interface IProps {
 	key: string;
@@ -16,15 +17,11 @@ interface IProps {
 }
 
 const TodoCard: React.FC<IProps> = ({ todoResource, index }) => {
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
 	const extra = (
 		<Space>
-			<Button
-				icon={<EditOutlined />}
-				type='text'
-				onClick={() => {
-					console.log('edit todo');
-				}}
-			/>
+			<Button icon={<EditOutlined />} type='text' onClick={() => setIsModalOpen(true)} />
 			<Button
 				icon={<DeleteOutlined />}
 				type='text'
@@ -36,21 +33,24 @@ const TodoCard: React.FC<IProps> = ({ todoResource, index }) => {
 	);
 
 	return (
-		<Draggable index={index} draggableId={todoResource.id} key={todoResource.id}>
-			{(provided) => (
-				<div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-					<Card
-						className='todo-card'
-						bodyStyle={{ maxHeight: '600px', overflowY: 'scroll' }}
-						key={todoResource?.id}
-						title={todoResource?.title}
-						extra={extra}
-					>
-						<Typography.Text>{todoResource?.description}</Typography.Text>
-					</Card>
-				</div>
-			)}
-		</Draggable>
+		<>
+			<Draggable index={index} draggableId={todoResource.id} key={todoResource.id}>
+				{(provided) => (
+					<div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+						<Card
+							className='todo-card'
+							bodyStyle={{ maxHeight: '600px', overflowY: 'scroll' }}
+							key={todoResource?.id}
+							title={todoResource?.title}
+							extra={extra}
+						>
+							<Typography.Text>{todoResource?.description}</Typography.Text>
+						</Card>
+					</div>
+				)}
+			</Draggable>
+			<UpdateTodoModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} todo={todoResource} />
+		</>
 	);
 };
 

@@ -20,21 +20,6 @@ export interface Columns {
 	completed: Column;
 }
 
-export const TodoColumns: Columns = {
-	todo: {
-		title: 'To Do',
-		items: [],
-	},
-	inProgress: {
-		title: 'In Progress',
-		items: [],
-	},
-	completed: {
-		title: 'Completed',
-		items: [],
-	},
-};
-
 export enum TodoStatus {
 	Todo = 'todo',
 	InProgress = 'inProgress',
@@ -50,4 +35,16 @@ export const mapTodoStatusToColumnKey = (status: TodoResourceStatusEnum): keyof 
 		case TodoResourceStatusEnum.Completed:
 			return 'completed';
 	}
+};
+
+export const mapColumnKeyToTodoStatus = (columnKey: string): TodoResourceStatusEnum | undefined => {
+	switch (columnKey) {
+		case 'todo':
+			return TodoResourceStatusEnum.Todo;
+		case 'inProgress':
+			return TodoResourceStatusEnum.InProgress;
+		case 'completed':
+			return TodoResourceStatusEnum.Completed;
+	}
+	return undefined;
 };

@@ -8,9 +8,10 @@ import { FETCH_ALL_TODO_SSE_ENDPOINT } from '../config/application-config';
 
 interface IProps {
 	onTodoFetch: any;
+	reloadTodos: number;
 }
 
-const DynamicTodo: React.FC<IProps> = ({ onTodoFetch }) => {
+const DynamicTodo: React.FC<IProps> = ({ onTodoFetch, reloadTodos }) => {
 	useEffect(() => {
 		const eventSource = new EventSource(FETCH_ALL_TODO_SSE_ENDPOINT);
 
@@ -28,7 +29,7 @@ const DynamicTodo: React.FC<IProps> = ({ onTodoFetch }) => {
 		return () => {
 			eventSource.close();
 		};
-	}, []);
+	}, [reloadTodos]);
 
 	return <></>;
 };

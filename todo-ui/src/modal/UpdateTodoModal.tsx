@@ -1,40 +1,40 @@
 /**
  * @author Rinkesh <rinkesh.agrawal@314ecorp.com>
- * @description modal to open for creating new todo's
+ * @description modal to open for updating new todo's
  */
 
-import React, { useState } from 'react';
-import { Form, Input, Modal, Typography, message as antdMessage } from 'antd';
-
-import useCreateTodo from '../hooks/useCreateTodo';
-import { CreateTodo } from '../client/api';
+import React from 'react';
+import { Form, FormInstance, Input, Modal, Typography, message as antdMessage } from 'antd';
+import { TodoResource, UpdateTodo } from '../client/api';
+import useUpdateTodo from '../hooks/useUpdateTodo';
 
 interface IProps {
+	todo: TodoResource;
 	isModalOpen: boolean;
 	setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddTodoModal: React.FC<IProps> = ({ isModalOpen, setIsModalOpen }) => {
+const UpdateTodoModal: React.FC<IProps> = ({ todo, isModalOpen, setIsModalOpen }) => {
 	const [form] = Form.useForm();
-	const [description, setDescription] = useState<string>('');
-	const [title, setTitle] = useState<string>('');
-	const createTodo = useCreateTodo();
+	const updateTodo = useUpdateTodo();
 
 	const handleFinish = (values: any) => {
-		const createTodoPayload: CreateTodo = {
+		const updateTodoPayload: UpdateTodo = {
+			todoStatus: todo.status,
 			title: values.title,
 			description: values.description,
 		};
-		createTodo.mutate(
-			{ createTodo: createTodoPayload },
+
+		updateTodo.mutate(
+			{ uuid: todo.id, updateTodo: updateTodoPayload },
 			{
 				onSuccess: () => {
+					form.resetFields();
 					setIsModalOpen(false);
-					antdMessage.success('Successfully created new todo');
+					antdMessage.success('Updated Todo');
 				},
 				onError: () => {
-					setIsModalOpen(true);
-					antdMessage.error('Unable to create new todo');
+					antdMessage.error('Unable to update todo');
 				},
 			},
 		);
@@ -50,7 +50,13 @@ const AddTodoModal: React.FC<IProps> = ({ isModalOpen, setIsModalOpen }) => {
 
 	return (
 		<Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-			<Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} onFinish={handleFinish}>
+			<Form
+				form={form}
+				labelCol={{ span: 6 }}
+				wrapperCol={{ span: 16 }}
+				onFinish={handleFinish}
+				initialValues={{ title: todo.title, description: todo.description }}
+			>
 				<Form.Item name='title' label='Title' rules={[{ required: true }]}>
 					<Input placeholder='Enter Todo Title' />
 				</Form.Item>
@@ -62,4 +68,4 @@ const AddTodoModal: React.FC<IProps> = ({ isModalOpen, setIsModalOpen }) => {
 	);
 };
 
-export default AddTodoModal;
+export default UpdateTodoModal;
