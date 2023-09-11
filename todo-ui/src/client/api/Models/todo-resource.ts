@@ -25,42 +25,42 @@ export interface TodoResource {
      * @type {string}
      * @memberof TodoResource
      */
-    'id'?: string;
+    'id': string;
     /**
      * 
      * @type {string}
      * @memberof TodoResource
      */
-    'title'?: string;
+    'title': string;
     /**
      * 
      * @type {string}
      * @memberof TodoResource
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof TodoResource
      */
-    'status'?: TodoResourceStatusEnum;
+    'status': TodoResourceStatusEnum;
     /**
      * 
      * @type {string}
      * @memberof TodoResource
      */
-    'createdAt'?: string;
+    'createdAt': string;
     /**
      * 
      * @type {string}
      * @memberof TodoResource
      */
-    'updatedAt'?: string;
+    'updatedAt': string;
 }
 
 export const TodoResourceStatusEnum = {
     Todo: 'TODO',
-    Progress: 'PROGRESS',
+    InProgress: 'IN_PROGRESS',
     Completed: 'COMPLETED'
 } as const;
 

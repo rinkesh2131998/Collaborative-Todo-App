@@ -3,14 +3,12 @@
  * @description the landing page for the app.
  */
 
-import _ from 'lodash';
+import React, { useState } from 'react';
 import { Button, Col, Layout, Row, Typography } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 
-import React, { useState } from 'react';
 import AddTodoModal from './AddTodoModal';
-import TodoCard from './TodoCard';
-import { activeTodos } from '../data/dummy-data';
+import ContentDashboard from './ContentDashboard';
 
 const { Header, Content } = Layout;
 
@@ -29,18 +27,7 @@ const Dashboard: React.FC = () => {
 				</Row>
 			</Header>
 			<Content className='app-content'>
-				<Row>
-					<Col flex={10}>
-						<Typography.Title>Active Todos</Typography.Title>
-						{_.map(activeTodos, (todo) => (
-							<TodoCard todoResource={todo} />
-						))}
-					</Col>
-					<Col flex={4} />
-					<Col flex={10}>
-						<Typography.Title>Completed Todos</Typography.Title>
-					</Col>
-				</Row>
+				<ContentDashboard />
 			</Content>
 			<AddTodoModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
 		</Layout>

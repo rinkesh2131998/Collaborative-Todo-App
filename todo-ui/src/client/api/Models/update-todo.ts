@@ -42,7 +42,7 @@ export interface UpdateTodo {
 
 export const UpdateTodoTodoStatusEnum = {
     Todo: 'TODO',
-    Progress: 'PROGRESS',
+    InProgress: 'IN_PROGRESS',
     Completed: 'COMPLETED'
 } as const;
 

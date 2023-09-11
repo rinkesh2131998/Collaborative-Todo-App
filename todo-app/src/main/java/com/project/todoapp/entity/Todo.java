@@ -30,6 +30,6 @@ public class Todo {
   }
 
   public enum TodoStatus {
-    TODO, PROGRESS, COMPLETED
+    TODO, IN_PROGRESS, COMPLETED
   }
 }

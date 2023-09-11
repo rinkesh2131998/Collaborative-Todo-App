@@ -37,7 +37,7 @@ export const inProgressTodos: TodoResource[] = [
 		id: '4',
 		title: 'Todo-Title',
 		description: 'Task 4',
-		status: TodoResourceStatusEnum.Progress,
+		status: TodoResourceStatusEnum.InProgress,
 		createdAt: '2023-09-07T08:00:00Z',
 		updatedAt: '2023-09-07T09:45:00Z',
 	},
@@ -45,7 +45,7 @@ export const inProgressTodos: TodoResource[] = [
 		id: '5',
 		title: 'Todo-Title',
 		description: 'Task 5',
-		status: TodoResourceStatusEnum.Progress,
+		status: TodoResourceStatusEnum.InProgress,
 		createdAt: '2023-09-07T10:30:00Z',
 		updatedAt: '2023-09-07T11:15:00Z',
 	},
@@ -53,7 +53,7 @@ export const inProgressTodos: TodoResource[] = [
 		id: '6',
 		title: 'Todo-Title',
 		description: 'Task 6',
-		status: TodoResourceStatusEnum.Progress,
+		status: TodoResourceStatusEnum.InProgress,
 		createdAt: '2023-09-07T12:00:00Z',
 		updatedAt: '2023-09-07T13:30:00Z',
 	},
@@ -85,3 +85,18 @@ export const completedTodos: TodoResource[] = [
 		updatedAt: '2023-09-07T13:30:00Z',
 	},
 ];
+
+export const todoColumns = {
+	todo: {
+		title: 'To Do',
+		items: activeTodos,
+	},
+	inProgress: {
+		title: 'In Progress',
+		items: inProgressTodos,
+	},
+	completed: {
+		title: 'Completed',
+		items: completedTodos,
+	},
+};

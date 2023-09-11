@@ -5,14 +5,17 @@
 
 import React from 'react';
 import { TodoResource } from '../client/api';
-import { Button, Card, Descriptions, Space, Typography } from 'antd';
+import { Button, Card, Space, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Draggable } from 'react-beautiful-dnd';
 
 interface IProps {
-	todoResource?: TodoResource;
+	key: string;
+	todoResource: TodoResource;
+	index: number;
 }
 
-const TodoCard: React.FC<IProps> = ({ todoResource }) => {
+const TodoCard: React.FC<IProps> = ({ todoResource, index }) => {
 	const extra = (
 		<Space>
 			<Button
@@ -33,17 +36,21 @@ const TodoCard: React.FC<IProps> = ({ todoResource }) => {
 	);
 
 	return (
-		<div>
-			<Card
-				key={todoResource?.id}
-				className='todo-card'
-				title={todoResource?.title}
-				extra={extra}
-				bodyStyle={{ maxHeight: '600px', overflowY: 'scroll' }}
-			>
-				<Typography.Text>{todoResource?.description}</Typography.Text>
-			</Card>
-		</div>
+		<Draggable index={index} draggableId={todoResource.id} key={todoResource.id}>
+			{(provided) => (
+				<div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+					<Card
+						className='todo-card'
+						bodyStyle={{ maxHeight: '600px', overflowY: 'scroll' }}
+						key={todoResource?.id}
+						title={todoResource?.title}
+						extra={extra}
+					>
+						<Typography.Text>{todoResource?.description}</Typography.Text>
+					</Card>
+				</div>
+			)}
+		</Draggable>
 	);
 };
 
