@@ -7,11 +7,27 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import { Typography } from 'antd';
-import { todoColumns } from '../data/dummy-data';
+
+import DynamicTodo from './DynamicTodo';
 import TodoCard from './TodoCard';
+import { Columns, TodoColumns, mapTodoStatusToColumnKey } from '../config/application-config';
+import { TodoResource } from '../client/api';
 
 const ContentDashboard: React.FC = () => {
-	const [columns, setColumns] = useState<{}>(todoColumns);
+	const [columns, setColumns] = useState<Columns>(TodoColumns);
+
+	const addTodoToColumn = (columnId: keyof Columns, todo: any) => {
+		setColumns((prevColumns) => {
+			const updatedColumns: Columns = { ...prevColumns };
+			updatedColumns[columnId].items.push(todo);
+			return updatedColumns;
+		});
+	};
+
+	const handleTodoReceived = (todo: TodoResource) => {
+		const columnId = mapTodoStatusToColumnKey(todo.status);
+		addTodoToColumn(columnId, todo);
+	};
 
 	const onDragEnd = (result: DropResult, columns: any, setColumns: any) => {
 		if (!result.destination) return;
@@ -47,6 +63,7 @@ const ContentDashboard: React.FC = () => {
 
 	return (
 		<DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
+			<DynamicTodo onTodoFetch={handleTodoReceived} />
 			<div className='task-container'>
 				<div className='task-columns'>
 					{_.map(columns, (column: any, columnId: any) => (
