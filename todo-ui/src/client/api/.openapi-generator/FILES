@@ -1,5 +1,6 @@
 .gitignore
 .npmignore
+.openapi-generator-ignore
 Apis/todo-controller-api.ts
 Models/create-todo.ts
 Models/index.ts

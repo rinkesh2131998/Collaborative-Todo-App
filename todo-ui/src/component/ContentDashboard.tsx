@@ -10,9 +10,9 @@ import { Typography, message as antdMessage } from 'antd';
 
 import DynamicTodo from './DynamicTodo';
 import TodoCard from './TodoCard';
-import { Columns, mapColumnKeyToTodoStatus, mapTodoStatusToColumnKey } from '../config/application-config';
-import { TodoResource, UpdateTodo } from '../client/api';
 import useUpdateTodo from '../hooks/useUpdateTodo';
+import { Columns, mapColumnKeyToTodoStatus, mapTodoStatusToColumnKey } from '../config/application-config';
+import { TodoResource } from '../client/api';
 
 const todoColumns: Columns = {
 	todo: {

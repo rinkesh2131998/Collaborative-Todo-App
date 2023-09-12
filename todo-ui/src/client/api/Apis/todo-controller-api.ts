@@ -181,7 +181,8 @@ export const TodoControllerApiAxiosParamCreator = function (configuration?: Conf
             assertParamExists('updateTodo', 'uuid', uuid)
             // verify required parameter 'updateTodo' is not null or undefined
             assertParamExists('updateTodo', 'updateTodo', updateTodo)
-            const localVarPath = `/todo/{uuid}`;
+            const localVarPath = `/todo/{uuid}`
+                .replace(`{${"uuid"}}`, encodeURIComponent(String(uuid)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -192,10 +193,6 @@ export const TodoControllerApiAxiosParamCreator = function (configuration?: Conf
             const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-
-            if (uuid !== undefined) {
-                localVarQueryParameter['uuid'] = uuid;
-            }
 
 
     

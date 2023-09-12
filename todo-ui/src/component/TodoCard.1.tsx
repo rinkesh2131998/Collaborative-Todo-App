@@ -1,44 +1,25 @@
-/**
- * @author Rinkesh <rinkesh.agrawal@314ecorp.com>
- * @description card to render todo's.
- */
-
 import React, { useState } from 'react';
-import { TodoResource } from '../client/api';
-import { Button, Card, Space, Typography, message } from 'antd';
+import { Button, Card, Space, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Draggable } from 'react-beautiful-dnd';
 import UpdateTodoModal from '../modal/UpdateTodoModal';
 import useDeleteTodo from '../hooks/useDeleteTodo';
+import { IProps } from './TodoCard';
 
-interface IProps {
-	key: string;
-	todoResource: TodoResource;
-	index: number;
-}
-
-const TodoCard: React.FC<IProps> = ({ todoResource, index }) => {
+export const TodoCard: React.FC<IProps> = ({ todoResource, index }) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-	const deleteTodo = useDeleteTodo();
-
-	const handleDelete = () => {
-		deleteTodo.mutate(
-			{ uuid: todoResource.id },
-			{
-				onSuccess: () => {
-					message.success('Deleted todo');
-				},
-				onError: () => {
-					message.error('Unable to delete todo');
-				},
-			},
-		);
-	};
+	useDeleteTodo();
 
 	const extra = (
 		<Space>
 			<Button icon={<EditOutlined />} type='text' onClick={() => setIsModalOpen(true)} />
-			<Button icon={<DeleteOutlined />} type='text' onClick={handleDelete} />
+			<Button
+				icon={<DeleteOutlined />}
+				type='text'
+				onClick={() => {
+					console.log('delete todo');
+				}}
+			/>
 		</Space>
 	);
 
@@ -63,5 +44,3 @@ const TodoCard: React.FC<IProps> = ({ todoResource, index }) => {
 		</>
 	);
 };
-
-export default TodoCard;

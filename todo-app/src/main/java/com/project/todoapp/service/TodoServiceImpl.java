@@ -48,10 +48,10 @@ public class TodoServiceImpl implements TodoService {
         .switchIfEmpty(Mono.error(
             new TodoItemNotFoundException(String.format("Unable to find todo with id: %s", uuid))))
         .flatMap(todo -> {
+          todo.setTitle(updateTodo.title());
           todo.setDescription(updateTodo.description());
           todo.setStatus(updateTodo.todoStatus());
           todo.setUpdatedAt(OffsetDateTime.now());
-
           return todoRepository.save(todo);
         }).map(this::convertToDto);
   }

@@ -6,11 +6,11 @@ import com.project.todoapp.dto.UpdateTodo;
 import com.project.todoapp.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.expression.spel.ast.Literal;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,8 +59,8 @@ public class TodoController {
    * used to update to-do item.
    */
   @PutMapping("/{uuid}")
-  public Mono<TodoResource> updateTodo(@RequestParam final String uuid, @RequestBody final
-                                       UpdateTodo payload) {
+  public Mono<TodoResource> updateTodo(@PathVariable final String uuid, @RequestBody final
+  UpdateTodo payload) {
     return todoService.updateTodoItem(uuid, payload);
   }
 
