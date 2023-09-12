@@ -1,14 +1,20 @@
+body {
+	margin: 0;
+}
+
 .app-header {
 	color: #fff;
-	height: 8vh;
+	height: 60px;
 	background-color: #e2e2e2;
+	padding: 0 10px;
 }
 
 .app-content {
 	color: #000;
-	height: 92vh;
+	height: calc(100vh - 60px);
 	background-color: #fff;
 	text-align: center;
+	overflow: scroll;
 }
 
 .todo-card {
@@ -37,4 +43,6 @@
 	display: flex;
 	width: 100%;
 	min-height: 80vh;
+	display: flex;
+	justify-content: center;
 }

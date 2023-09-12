@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Button, Form, Layout, Row, Space, message as antdMessage } from 'antd';
+import { Button, Col, Form, Layout, Row, Space, Typography, message as antdMessage } from 'antd';
 import { PlusCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 
 import AddOrUpdateTodoModal from '../modal/AddTodoModal';
@@ -44,19 +44,24 @@ const Dashboard: React.FC = () => {
 	return (
 		<Layout>
 			<Header className='app-header'>
-				<Row>
-					<Space>
-						<Button type='primary' icon={<PlusCircleOutlined />} onClick={() => setIsModalOpen(true)}>
-							Add Todo
-						</Button>
-						<Button
-							type='primary'
-							icon={<ReloadOutlined />}
-							onClick={() => setRefreshCount((prevCount) => prevCount + 1)}
-						>
-							Reload Todos
-						</Button>
-					</Space>
+				<Row justify='space-between'>
+					<Col>
+						<Typography.Text style={{ fontWeight: 600, fontSize: '30px' }}>TO-DO</Typography.Text>
+					</Col>
+					<Col>
+						<Space>
+							<Button type='primary' icon={<PlusCircleOutlined />} onClick={() => setIsModalOpen(true)}>
+								Add Todo
+							</Button>
+							<Button
+								type='primary'
+								icon={<ReloadOutlined />}
+								onClick={() => setRefreshCount((prevCount) => prevCount + 1)}
+							>
+								Reload Todos
+							</Button>
+						</Space>
+					</Col>
 				</Row>
 			</Header>
 			<Content className='app-content'>

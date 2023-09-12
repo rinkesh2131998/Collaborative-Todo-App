@@ -6,6 +6,7 @@ import com.project.todoapp.dto.UpdateTodo;
 import com.project.todoapp.entity.Todo;
 import com.project.todoapp.exception.TodoItemNotFoundException;
 import com.project.todoapp.repository.TodoRepository;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.Data;
@@ -38,7 +39,7 @@ public class TodoServiceImpl implements TodoService {
 
   @Override
   public Flux<TodoResource> getAllTodos() {
-    return todoRepository.findAll().map(this::convertToDto);
+    return todoRepository.findAll().map(this::convertToDto).delayElements(Duration.ofMillis(500));
   }
 
   @Override
