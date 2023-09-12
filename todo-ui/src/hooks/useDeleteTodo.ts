@@ -10,11 +10,12 @@ import api from '../client/RequestClient';
 
 interface IVariable {
 	uuid: string;
+	version: number;
 }
 
 const useDeleteTodo = (): UseMutationResult<any, unknown, IVariable, unknown> => {
 	return useMutation(async (payload) => {
-		const { data } = await api.TodoControllerApi.deleteTodo(payload.uuid);
+		const { data } = await api.TodoControllerApi.deleteTodo(payload.uuid, payload.version);
 		return data;
 	});
 };

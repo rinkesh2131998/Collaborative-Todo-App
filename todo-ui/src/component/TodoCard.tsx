@@ -23,7 +23,7 @@ const TodoCard: React.FC<IProps> = ({ todoResource, index }) => {
 
 	const handleDelete = () => {
 		deleteTodo.mutate(
-			{ uuid: todoResource.id },
+			{ uuid: todoResource.id, version: todoResource.version },
 			{
 				onSuccess: () => {
 					message.success('Deleted todo');

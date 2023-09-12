@@ -15,6 +15,7 @@ public interface TodoService {
 
   /**
    * add new to do item.
+   *
    * @param createTodo payload to use for creating new item.
    * @return created to-do item
    */
@@ -22,6 +23,7 @@ public interface TodoService {
 
   /**
    * fetch a single to-do item by its id.
+   *
    * @param todoId to fetch
    * @return resource
    */
@@ -29,22 +31,26 @@ public interface TodoService {
 
   /**
    * fetch all to-do items.
+   *
    * @return all to-do type resources.
    */
   Flux<TodoResource> getAllTodos();
 
   /**
    * used to update an already existing to do item.
-   * @param uuid identifier for the to-do to be updated
+   *
+   * @param uuid       identifier for the to-do to be updated
    * @param updateTodo payload used to update resource
    * @return updated resource
    */
-  Mono<TodoResource> updateTodoItem(String uuid, UpdateTodo updateTodo);
+  Mono<TodoResource> updateTodoItem(String uuid, UpdateTodo updateTodo, long version);
 
   /**
    * used to delete an existing to-do item.
-   * @param uuid identifier for the resource to delete
+   *
+   * @param uuid    identifier for the resource to delete
+   * @param version for concurrent update checks
    * @return void
    */
-  Mono<Void> deleteTodoItem(String uuid);
+  Mono<Void> deleteTodoItem(String uuid, long version);
 }

@@ -26,7 +26,7 @@ const UpdateTodoModal: React.FC<IProps> = ({ todo, isModalOpen, setIsModalOpen }
 		};
 
 		updateTodo.mutate(
-			{ uuid: todo.id, updateTodo: updateTodoPayload },
+			{ uuid: todo.id, updateTodo: updateTodoPayload, version: todo.version },
 			{
 				onSuccess: () => {
 					form.resetFields();

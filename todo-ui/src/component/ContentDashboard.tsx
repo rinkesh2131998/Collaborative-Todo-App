@@ -69,7 +69,7 @@ const ContentDashboard: React.FC<IProps> = ({ refreshCount }) => {
 		};
 		let response: boolean = true;
 		updateTodo.mutate(
-			{ uuid: todo.id, updateTodo: updateTodoPayload },
+			{ uuid: todo.id, updateTodo: updateTodoPayload, version: todo.version },
 			{
 				onSuccess: () => {
 					response = true;

@@ -4,6 +4,7 @@ import com.project.todoapp.dto.CreateTodo;
 import com.project.todoapp.dto.TodoResource;
 import com.project.todoapp.dto.UpdateTodo;
 import com.project.todoapp.entity.Todo;
+import com.project.todoapp.exception.ConcurrentModificationException;
 import com.project.todoapp.exception.TodoItemNotFoundException;
 import com.project.todoapp.repository.TodoRepository;
 import java.time.Duration;
@@ -43,8 +44,9 @@ public class TodoServiceImpl implements TodoService {
   }
 
   @Override
-  public Mono<TodoResource> updateTodoItem(final String uuid, final UpdateTodo updateTodo) {
-    return todoRepository.findById(UUID.fromString(uuid))
+  public Mono<TodoResource> updateTodoItem(final String uuid, final UpdateTodo updateTodo,
+                                           final long version) {
+    return findById(uuid, version)
         .switchIfEmpty(Mono.error(
             new TodoItemNotFoundException(String.format("Unable to find todo with id: %s", uuid))))
         .flatMap(todo -> {
@@ -57,8 +59,8 @@ public class TodoServiceImpl implements TodoService {
   }
 
   @Override
-  public Mono<Void> deleteTodoItem(final String uuid) {
-    return todoRepository.findById(UUID.fromString(uuid))
+  public Mono<Void> deleteTodoItem(final String uuid, final long version) {
+    return findById(uuid, version)
         .switchIfEmpty(Mono.error(
             new TodoItemNotFoundException(String.format("Unable to find todo with id: %s", uuid))))
         .flatMap(todoRepository::delete);
@@ -67,11 +69,26 @@ public class TodoServiceImpl implements TodoService {
   private TodoResource convertToDto(final Todo todo) {
     return TodoResource.builder()
         .id(todo.getTodoId())
+        .version(todo.getVersion())
         .title(todo.getTitle())
         .description(todo.getDescription())
         .status(todo.getStatus())
         .createdAt(todo.getCreatedAt())
         .updatedAt(todo.getUpdatedAt())
         .build();
+  }
+
+  private Mono<Todo> findById(final String uuid, final long version) {
+    return todoRepository.findById(UUID.fromString(uuid))
+        .switchIfEmpty(Mono.error(
+            new TodoItemNotFoundException(String.format("Unable to find todo with id: %s", uuid))))
+        .handle((item, sink) -> {
+          if (!item.getVersion().equals(version)) {
+            sink.error(new ConcurrentModificationException(
+                String.format("concurrent modification of todo with id: [%s]", uuid)));
+          } else {
+            sink.next(item);
+          }
+        });
   }
 }

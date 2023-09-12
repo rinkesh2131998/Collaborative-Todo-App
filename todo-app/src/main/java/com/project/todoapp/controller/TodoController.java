@@ -6,6 +6,7 @@ import com.project.todoapp.dto.UpdateTodo;
 import com.project.todoapp.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,16 +62,19 @@ public class TodoController {
    */
   @PutMapping("/{uuid}")
   public Mono<TodoResource> updateTodo(@PathVariable final String uuid, @RequestBody final
-  UpdateTodo payload) {
-    return todoService.updateTodoItem(uuid, payload);
+  UpdateTodo payload, @RequestHeader(name = HttpHeaders.IF_MATCH, required = false)
+                                       final long version) {
+    return todoService.updateTodoItem(uuid, payload, version);
   }
 
   /**
    * used to delete an existing to do item.
    */
   @DeleteMapping("/{uuid}")
-  public Mono<Void> deleteTodo(@RequestParam final String uuid) {
-    return todoService.deleteTodoItem(uuid);
+  public Mono<Void> deleteTodo(@RequestParam final String uuid,
+                               @RequestHeader(name = HttpHeaders.IF_MATCH, required = false)
+                               final long version) {
+    return todoService.deleteTodoItem(uuid, version);
   }
 
 }

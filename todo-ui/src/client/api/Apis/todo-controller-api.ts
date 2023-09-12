@@ -71,10 +71,11 @@ export const TodoControllerApiAxiosParamCreator = function (configuration?: Conf
         /**
          * 
          * @param {string} uuid 
+         * @param {number} [ifMatch] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteTodo: async (uuid: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteTodo: async (uuid: string, ifMatch?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'uuid' is not null or undefined
             assertParamExists('deleteTodo', 'uuid', uuid)
             const localVarPath = `/todo/{uuid}`;
@@ -91,6 +92,12 @@ export const TodoControllerApiAxiosParamCreator = function (configuration?: Conf
 
             if (uuid !== undefined) {
                 localVarQueryParameter['uuid'] = uuid;
+            }
+
+            if (ifMatch != null) {
+                localVarHeaderParameter['If-Match'] = typeof ifMatch === 'string' 
+                    ? ifMatch 
+                    : JSON.stringify(ifMatch);
             }
 
 
@@ -173,10 +180,11 @@ export const TodoControllerApiAxiosParamCreator = function (configuration?: Conf
          * 
          * @param {string} uuid 
          * @param {UpdateTodo} updateTodo 
+         * @param {number} [ifMatch] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateTodo: async (uuid: string, updateTodo: UpdateTodo, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateTodo: async (uuid: string, updateTodo: UpdateTodo, ifMatch?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'uuid' is not null or undefined
             assertParamExists('updateTodo', 'uuid', uuid)
             // verify required parameter 'updateTodo' is not null or undefined
@@ -193,6 +201,12 @@ export const TodoControllerApiAxiosParamCreator = function (configuration?: Conf
             const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (ifMatch != null) {
+                localVarHeaderParameter['If-Match'] = typeof ifMatch === 'string' 
+                    ? ifMatch 
+                    : JSON.stringify(ifMatch);
+            }
 
 
     
@@ -231,11 +245,12 @@ export const TodoControllerApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} uuid 
+         * @param {number} [ifMatch] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteTodo(uuid: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteTodo(uuid, options);
+        async deleteTodo(uuid: string, ifMatch?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteTodo(uuid, ifMatch, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -261,11 +276,12 @@ export const TodoControllerApiFp = function(configuration?: Configuration) {
          * 
          * @param {string} uuid 
          * @param {UpdateTodo} updateTodo 
+         * @param {number} [ifMatch] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateTodo(uuid: string, updateTodo: UpdateTodo, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TodoResource>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateTodo(uuid, updateTodo, options);
+        async updateTodo(uuid: string, updateTodo: UpdateTodo, ifMatch?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TodoResource>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateTodo(uuid, updateTodo, ifMatch, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -290,11 +306,12 @@ export const TodoControllerApiFactory = function (configuration?: Configuration,
         /**
          * 
          * @param {string} uuid 
+         * @param {number} [ifMatch] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteTodo(uuid: string, options?: any): AxiosPromise<void> {
-            return localVarFp.deleteTodo(uuid, options).then((request) => request(axios, basePath));
+        deleteTodo(uuid: string, ifMatch?: number, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteTodo(uuid, ifMatch, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -317,11 +334,12 @@ export const TodoControllerApiFactory = function (configuration?: Configuration,
          * 
          * @param {string} uuid 
          * @param {UpdateTodo} updateTodo 
+         * @param {number} [ifMatch] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateTodo(uuid: string, updateTodo: UpdateTodo, options?: any): AxiosPromise<TodoResource> {
-            return localVarFp.updateTodo(uuid, updateTodo, options).then((request) => request(axios, basePath));
+        updateTodo(uuid: string, updateTodo: UpdateTodo, ifMatch?: number, options?: any): AxiosPromise<TodoResource> {
+            return localVarFp.updateTodo(uuid, updateTodo, ifMatch, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -344,11 +362,12 @@ export interface TodoControllerApiInterface {
     /**
      * 
      * @param {string} uuid 
+     * @param {number} [ifMatch] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TodoControllerApiInterface
      */
-    deleteTodo(uuid: string, options?: AxiosRequestConfig): AxiosPromise<void>;
+    deleteTodo(uuid: string, ifMatch?: number, options?: AxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * 
@@ -371,11 +390,12 @@ export interface TodoControllerApiInterface {
      * 
      * @param {string} uuid 
      * @param {UpdateTodo} updateTodo 
+     * @param {number} [ifMatch] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TodoControllerApiInterface
      */
-    updateTodo(uuid: string, updateTodo: UpdateTodo, options?: AxiosRequestConfig): AxiosPromise<TodoResource>;
+    updateTodo(uuid: string, updateTodo: UpdateTodo, ifMatch?: number, options?: AxiosRequestConfig): AxiosPromise<TodoResource>;
 
 }
 
@@ -400,12 +420,13 @@ export class TodoControllerApi extends BaseAPI implements TodoControllerApiInter
     /**
      * 
      * @param {string} uuid 
+     * @param {number} [ifMatch] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TodoControllerApi
      */
-    public deleteTodo(uuid: string, options?: AxiosRequestConfig) {
-        return TodoControllerApiFp(this.configuration).deleteTodo(uuid, options).then((request) => request(this.axios, this.basePath));
+    public deleteTodo(uuid: string, ifMatch?: number, options?: AxiosRequestConfig) {
+        return TodoControllerApiFp(this.configuration).deleteTodo(uuid, ifMatch, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -433,11 +454,12 @@ export class TodoControllerApi extends BaseAPI implements TodoControllerApiInter
      * 
      * @param {string} uuid 
      * @param {UpdateTodo} updateTodo 
+     * @param {number} [ifMatch] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TodoControllerApi
      */
-    public updateTodo(uuid: string, updateTodo: UpdateTodo, options?: AxiosRequestConfig) {
-        return TodoControllerApiFp(this.configuration).updateTodo(uuid, updateTodo, options).then((request) => request(this.axios, this.basePath));
+    public updateTodo(uuid: string, updateTodo: UpdateTodo, ifMatch?: number, options?: AxiosRequestConfig) {
+        return TodoControllerApiFp(this.configuration).updateTodo(uuid, updateTodo, ifMatch, options).then((request) => request(this.axios, this.basePath));
     }
 }

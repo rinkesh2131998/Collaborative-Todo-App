@@ -10,7 +10,8 @@ import lombok.Builder;
  * data class to return to-do items.
  */
 @Builder
-public record TodoResource(@NotNull UUID id, @NotNull String title, @NotNull String description,
+public record TodoResource(@NotNull UUID id, @NotNull Long version, @NotNull String title,
+                           @NotNull String description,
                            @NotNull Todo.TodoStatus status, @NotNull OffsetDateTime createdAt,
                            @NotNull OffsetDateTime updatedAt) {
 }

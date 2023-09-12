@@ -28,6 +28,12 @@ export interface TodoResource {
     'id': string;
     /**
      * 
+     * @type {number}
+     * @memberof TodoResource
+     */
+    'version': number;
+    /**
+     * 
      * @type {string}
      * @memberof TodoResource
      */

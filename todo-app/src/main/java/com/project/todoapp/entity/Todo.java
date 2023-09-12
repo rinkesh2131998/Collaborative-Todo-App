@@ -5,6 +5,7 @@ import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
@@ -16,6 +17,8 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Todo {
   @Id
   private UUID todoId;
+  @Version
+  private Long version;
   private String title;
   private String description;
   private TodoStatus status;
