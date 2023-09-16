@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
-import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, DraggableLocation, DropResult, Droppable } from 'react-beautiful-dnd';
 import { Typography, message as antdMessage } from 'antd';
 
 import DynamicTodo from './DynamicTodo';
@@ -55,8 +55,16 @@ const ContentDashboard: React.FC<IProps> = ({ refreshCount }) => {
 		addTodoToColumn(columnId, todo);
 	};
 
-	const handleTodoUpdate = (updatedTodoState: string, todo: TodoResource): boolean => {
-		const todoStatus = mapColumnKeyToTodoStatus(updatedTodoState);
+	const handleTodoStatusUpdate = (
+		sourceColumn: any,
+		source: DraggableLocation,
+		sourceItems: any[],
+		destination: DraggableLocation,
+		columns: any,
+		setColumns: any,
+		todo: TodoResource,
+	) => {
+		const todoStatus = mapColumnKeyToTodoStatus(destination.droppableId);
 		if (todoStatus === undefined) {
 			antdMessage.error('Unable to move item');
 			return false;
@@ -67,19 +75,34 @@ const ContentDashboard: React.FC<IProps> = ({ refreshCount }) => {
 			description: todo.description,
 			todoStatus,
 		};
-		let response: boolean = true;
-		updateTodo.mutate(
+
+		void updateTodo.mutate(
 			{ uuid: todo.id, updateTodo: updateTodoPayload, version: todo.version },
 			{
-				onSuccess: () => {
-					response = true;
+				onSuccess: (data) => {
+					const destColumn = columns[destination.droppableId];
+					const destItems = [...destColumn.items];
+
+					destItems.splice(destination.index, 0, data);
+
+					const updatedColumns = {
+						...columns,
+						[source.droppableId]: {
+							...sourceColumn,
+							items: sourceItems,
+						},
+						[destination.droppableId]: {
+							...destColumn,
+							items: destItems,
+						},
+					};
+					setColumns(updatedColumns);
 				},
 				onError: () => {
-					response = false;
+					antdMessage.error('Unable to move todo');
 				},
 			},
 		);
-		return response;
 	};
 
 	const onDragEnd = (result: DropResult, columns: any, setColumns: any) => {
@@ -94,28 +117,16 @@ const ContentDashboard: React.FC<IProps> = ({ refreshCount }) => {
 		if (source.droppableId == destination.droppableId) {
 			sourceItems.splice(destination.index, 0, removed);
 		} else {
-			if (!handleTodoUpdate(destination.droppableId, removed)) {
-				return;
-			}
-
-			const destColumn = columns[destination.droppableId];
-			const destItems = [...destColumn.items];
-
-			destItems.splice(destination.index, 0, removed);
-
-			const updatedColumns = {
-				...columns,
-				[source.droppableId]: {
-					...sourceColumn,
-					items: sourceItems,
-				},
-				[destination.droppableId]: {
-					...destColumn,
-					items: destItems,
-				},
-			};
-			setColumns(updatedColumns);
+			void handleTodoStatusUpdate(sourceColumn, source, sourceItems, destination, columns, setColumns, removed);
 		}
+	};
+
+	const removeTodoFromColumn = (todoId: string, columnId: keyof Columns) => {
+		setColumns((prevColumns) => {
+			const updatedColumns: Columns = { ...prevColumns };
+			updatedColumns[columnId].items = _.filter(updatedColumns[columnId].items, (item) => item.id !== todoId);
+			return updatedColumns;
+		});
 	};
 
 	return (
@@ -129,7 +140,12 @@ const ContentDashboard: React.FC<IProps> = ({ refreshCount }) => {
 								<div className='task-list' ref={provided.innerRef} {...provided.droppableProps}>
 									<Typography.Title>{column?.title}</Typography.Title>
 									{_.map(column.items, (item, index: number) => (
-										<TodoCard key={item.id} todoResource={item} index={index} />
+										<TodoCard
+											key={item.id}
+											todoResource={item}
+											index={index}
+											removeTodoFromColumn={removeTodoFromColumn}
+										/>
 									))}
 									{provided.placeholder}
 								</div>

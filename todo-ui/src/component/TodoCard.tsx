@@ -10,14 +10,16 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Draggable } from 'react-beautiful-dnd';
 import UpdateTodoModal from '../modal/UpdateTodoModal';
 import useDeleteTodo from '../hooks/useDeleteTodo';
+import { Columns, mapTodoStatusToColumnKey } from '../config/application-config';
 
 interface IProps {
 	key: string;
 	todoResource: TodoResource;
 	index: number;
+	removeTodoFromColumn: (todoId: string, columnId: keyof Columns) => void;
 }
 
-const TodoCard: React.FC<IProps> = ({ todoResource, index }) => {
+const TodoCard: React.FC<IProps> = ({ todoResource, index, removeTodoFromColumn }) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const deleteTodo = useDeleteTodo();
 
@@ -27,6 +29,7 @@ const TodoCard: React.FC<IProps> = ({ todoResource, index }) => {
 			{
 				onSuccess: () => {
 					message.success('Deleted todo');
+					removeTodoFromColumn(todoResource.id, mapTodoStatusToColumnKey(todoResource.status));
 				},
 				onError: () => {
 					message.error('Unable to delete todo');
