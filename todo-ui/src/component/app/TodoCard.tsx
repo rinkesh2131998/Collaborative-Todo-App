@@ -4,22 +4,25 @@
  */
 
 import React, { useState } from 'react';
-import { TodoResource } from '../client/api';
 import { Button, Card, Space, Typography, message } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Draggable } from 'react-beautiful-dnd';
+
 import UpdateTodoModal from '../modal/UpdateTodoModal';
 import useDeleteTodo from '../hooks/useDeleteTodo';
-import { Columns, mapTodoStatusToColumnKey } from '../config/application-config';
+import { Columns } from '../../typing/app';
+import { TodoResource } from '../../client/api';
+import { mapTodoStatusToColumnKey } from '../../util/util';
 
 interface IProps {
 	key: string;
 	todoResource: TodoResource;
 	index: number;
 	removeTodoFromColumn: (todoId: string, columnId: keyof Columns) => void;
+	onTodoReceived: (todo: TodoResource) => void;
 }
 
-const TodoCard: React.FC<IProps> = ({ todoResource, index, removeTodoFromColumn }) => {
+const TodoCard: React.FC<IProps> = ({ todoResource, index, removeTodoFromColumn, onTodoReceived }) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const deleteTodo = useDeleteTodo();
 
@@ -62,7 +65,13 @@ const TodoCard: React.FC<IProps> = ({ todoResource, index, removeTodoFromColumn 
 					</div>
 				)}
 			</Draggable>
-			<UpdateTodoModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} todo={todoResource} />
+			<UpdateTodoModal
+				key={isModalOpen ? 'open' : 'closed'}
+				isModalOpen={isModalOpen}
+				setIsModalOpen={setIsModalOpen}
+				todo={todoResource}
+				onTodoReceived={onTodoReceived}
+			/>
 		</>
 	);
 };

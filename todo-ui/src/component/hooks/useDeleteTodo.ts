@@ -6,7 +6,7 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import _ from 'lodash';
 
-import api from '../client/RequestClient';
+import api from '../../client/RequestClient';
 
 interface IVariable {
 	uuid: string;

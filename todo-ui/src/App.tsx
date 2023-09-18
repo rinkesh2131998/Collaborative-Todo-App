@@ -3,7 +3,7 @@
  * @description root component.
  */
 import React from 'react';
-import Dashboard from './component/Dashboard';
+import Dashboard from './component/app/Dashboard';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import './style/style.css';

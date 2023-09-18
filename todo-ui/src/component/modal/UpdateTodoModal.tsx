@@ -4,17 +4,18 @@
  */
 
 import React from 'react';
-import { Form, FormInstance, Input, Modal, Typography, message as antdMessage } from 'antd';
-import { TodoResource, UpdateTodo } from '../client/api';
+import { Form, Input, Modal, message as antdMessage } from 'antd';
+import { TodoResource, UpdateTodo } from '../../client/api';
 import useUpdateTodo from '../hooks/useUpdateTodo';
 
 interface IProps {
 	todo: TodoResource;
+	onTodoReceived: (todo: TodoResource) => void;
 	isModalOpen: boolean;
 	setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const UpdateTodoModal: React.FC<IProps> = ({ todo, isModalOpen, setIsModalOpen }) => {
+const UpdateTodoModal: React.FC<IProps> = ({ todo, onTodoReceived, isModalOpen, setIsModalOpen }) => {
 	const [form] = Form.useForm();
 	const updateTodo = useUpdateTodo();
 
@@ -28,10 +29,11 @@ const UpdateTodoModal: React.FC<IProps> = ({ todo, isModalOpen, setIsModalOpen }
 		updateTodo.mutate(
 			{ uuid: todo.id, updateTodo: updateTodoPayload, version: todo.version },
 			{
-				onSuccess: () => {
+				onSuccess: (data) => {
 					form.resetFields();
 					setIsModalOpen(false);
 					antdMessage.success('Updated Todo');
+					onTodoReceived(data);
 				},
 				onError: () => {
 					antdMessage.error('Unable to update todo');

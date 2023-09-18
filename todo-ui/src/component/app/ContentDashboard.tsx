@@ -6,13 +6,15 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { DragDropContext, DraggableLocation, DropResult, Droppable } from 'react-beautiful-dnd';
-import { Typography, message as antdMessage } from 'antd';
+import { Form, Typography, message as antdMessage } from 'antd';
 
+import AddTodoModal from '../modal/AddTodoModal';
 import DynamicTodo from './DynamicTodo';
 import TodoCard from './TodoCard';
 import useUpdateTodo from '../hooks/useUpdateTodo';
-import { Columns, mapColumnKeyToTodoStatus, mapTodoStatusToColumnKey } from '../config/application-config';
-import { TodoResource } from '../client/api';
+import { Columns } from '../../typing/app';
+import { TodoResource } from '../../client/api';
+import { mapColumnKeyToTodoStatus, mapTodoStatusToColumnKey } from '../../util/util';
 
 const todoColumns: Columns = {
 	todo: {
@@ -30,29 +32,28 @@ const todoColumns: Columns = {
 };
 
 interface IProps {
+	isModalOpen: boolean;
+	setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	refreshCount: number;
 }
 
-const ContentDashboard: React.FC<IProps> = ({ refreshCount }) => {
+const ContentDashboard: React.FC<IProps> = ({ isModalOpen, setIsModalOpen, refreshCount }) => {
 	const [columns, setColumns] = useState<Columns>(todoColumns);
 	const updateTodo = useUpdateTodo();
+	const [form] = Form.useForm();
 
 	useEffect(() => {
 		_.forEach(todoColumns, (item) => (item.items = []));
 		setColumns(todoColumns);
 	}, [refreshCount]);
 
-	const addTodoToColumn = (columnId: keyof Columns, todo: any) => {
+	const handleTodoReceived = (todo: TodoResource) => {
+		const columnId = mapTodoStatusToColumnKey(todo.status);
 		setColumns((prevColumns) => {
 			const updatedColumns: Columns = { ...prevColumns };
 			updatedColumns[columnId].items.push(todo);
 			return updatedColumns;
 		});
-	};
-
-	const handleTodoReceived = (todo: TodoResource) => {
-		const columnId = mapTodoStatusToColumnKey(todo.status);
-		addTodoToColumn(columnId, todo);
 	};
 
 	const handleTodoStatusUpdate = (
@@ -129,32 +130,51 @@ const ContentDashboard: React.FC<IProps> = ({ refreshCount }) => {
 		});
 	};
 
+	const handleTodoFieldsUpdate = (todo: TodoResource) => {
+		setColumns((prevColumns) => {
+			const updatedColumns: Columns = { ...prevColumns };
+			return _.mapValues(updatedColumns, (column) => ({
+				...column,
+				items: column.items.map((item) => (item.id === todo.id ? todo : item)),
+			}));
+		});
+	};
+
 	return (
-		<DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
-			<DynamicTodo onTodoFetch={handleTodoReceived} reloadTodos={refreshCount} />
-			<div className='task-container'>
-				<div className='task-columns'>
-					{_.map(columns, (column: any, columnId: any) => (
-						<Droppable key={columnId} droppableId={columnId}>
-							{(provided) => (
-								<div className='task-list' ref={provided.innerRef} {...provided.droppableProps}>
-									<Typography.Title>{column?.title}</Typography.Title>
-									{_.map(column.items, (item, index: number) => (
-										<TodoCard
-											key={item.id}
-											todoResource={item}
-											index={index}
-											removeTodoFromColumn={removeTodoFromColumn}
-										/>
-									))}
-									{provided.placeholder}
-								</div>
-							)}
-						</Droppable>
-					))}
+		<div>
+			<DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
+				<DynamicTodo onTodoFetch={handleTodoReceived} reloadTodos={refreshCount} />
+				<div className='task-container'>
+					<div className='task-columns'>
+						{_.map(columns, (column: any, columnId: any) => (
+							<Droppable key={columnId} droppableId={columnId}>
+								{(provided) => (
+									<div className='task-list' ref={provided.innerRef} {...provided.droppableProps}>
+										<Typography.Title>{column?.title}</Typography.Title>
+										{_.map(column.items, (item, index: number) => (
+											<TodoCard
+												key={item.id}
+												todoResource={item}
+												index={index}
+												removeTodoFromColumn={removeTodoFromColumn}
+												onTodoReceived={handleTodoFieldsUpdate}
+											/>
+										))}
+										{provided.placeholder}
+									</div>
+								)}
+							</Droppable>
+						))}
+					</div>
 				</div>
-			</div>
-		</DragDropContext>
+			</DragDropContext>
+			<AddTodoModal
+				form={form}
+				onTodoReceived={handleTodoReceived}
+				isModalOpen={isModalOpen}
+				setIsModalOpen={setIsModalOpen}
+			/>
+		</div>
 	);
 };
 

@@ -4,42 +4,16 @@
  */
 
 import React, { useState } from 'react';
-import { Button, Col, Form, Layout, Row, Space, Typography, message as antdMessage } from 'antd';
+import { Button, Col, Layout, Row, Space, Typography } from 'antd';
 import { PlusCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 
-import AddOrUpdateTodoModal from '../modal/AddTodoModal';
 import ContentDashboard from './ContentDashboard';
-import useCreateTodo from '../hooks/useCreateTodo';
-import { CreateTodo } from '../client/api';
 
 const { Header, Content } = Layout;
 
 const Dashboard: React.FC = () => {
-	const [form] = Form.useForm();
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [refreshCount, setRefreshCount] = useState<number>(0);
-	const createTodo = useCreateTodo();
-
-	const handleFinish = (values: any) => {
-		const createTodoPayload: CreateTodo = {
-			title: values.title,
-			description: values.description,
-		};
-		createTodo.mutate(
-			{ createTodo: createTodoPayload },
-			{
-				onSuccess: () => {
-					form.resetFields();
-					setIsModalOpen(false);
-					antdMessage.success('Successfully created new todo');
-				},
-				onError: () => {
-					setIsModalOpen(true);
-					antdMessage.error('Unable to create new todo');
-				},
-			},
-		);
-	};
 
 	return (
 		<Layout>
@@ -65,14 +39,12 @@ const Dashboard: React.FC = () => {
 				</Row>
 			</Header>
 			<Content className='app-content'>
-				<ContentDashboard refreshCount={refreshCount} />
+				<ContentDashboard
+					isModalOpen={isModalOpen}
+					setIsModalOpen={setIsModalOpen}
+					refreshCount={refreshCount}
+				/>
 			</Content>
-			<AddOrUpdateTodoModal
-				form={form}
-				handleFinish={handleFinish}
-				isModalOpen={isModalOpen}
-				setIsModalOpen={setIsModalOpen}
-			/>
 		</Layout>
 	);
 };

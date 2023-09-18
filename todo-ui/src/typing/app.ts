@@ -25,13 +25,3 @@ export enum TodoStatus {
 	InProgress = 'inProgress',
 	Completed = 'completed',
 }
-
-// export declare namespace AppNs {
-// 	interface IValues {
-// 		todoColumns: Columns;
-// 	}
-
-// 	interface IActions {
-// 		setTodoColumns: (todoColumns: Columns) => { todoColumns: Columns };
-// 	}
-// }

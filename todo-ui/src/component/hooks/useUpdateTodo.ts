@@ -6,8 +6,8 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import _ from 'lodash';
 
-import api from '../client/RequestClient';
-import { UpdateTodo } from '../client/api';
+import api from '../../client/RequestClient';
+import { UpdateTodo } from '../../client/api';
 import { version } from 'react';
 
 interface IVariable {

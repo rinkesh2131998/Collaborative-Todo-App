@@ -40,7 +40,7 @@ public class TodoServiceImpl implements TodoService {
 
   @Override
   public Flux<TodoResource> getAllTodos() {
-    return todoRepository.findAll().map(this::convertToDto).delayElements(Duration.ofMillis(500));
+    return todoRepository.findAll().map(this::convertToDto).delayElements(Duration.ofMillis(50));
   }
 
   @Override

@@ -4,16 +4,43 @@
  */
 
 import React from 'react';
-import { Form, FormInstance, Input, Modal, Typography, message as antdMessage } from 'antd';
+import { Form, FormInstance, Input, Modal, message as antdMessage } from 'antd';
+
+import { CreateTodo, TodoResource } from '../../client/api';
+import useCreateTodo from '../hooks/useCreateTodo';
 
 interface IProps {
 	form: FormInstance<any>;
-	handleFinish: (values: any) => void;
+	onTodoReceived: (todo: TodoResource) => void;
 	isModalOpen: boolean;
 	setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddTodoModal: React.FC<IProps> = ({ form, handleFinish, isModalOpen, setIsModalOpen }) => {
+const AddTodoModal: React.FC<IProps> = ({ form, onTodoReceived, isModalOpen, setIsModalOpen }) => {
+	const createTodo = useCreateTodo();
+
+	const handleFinish = (values: any) => {
+		const createTodoPayload: CreateTodo = {
+			title: values.title,
+			description: values.description,
+		};
+		createTodo.mutate(
+			{ createTodo: createTodoPayload },
+			{
+				onSuccess: (response) => {
+					form.resetFields();
+					setIsModalOpen(false);
+					antdMessage.success('Successfully created new todo');
+					onTodoReceived(response.data);
+				},
+				onError: () => {
+					setIsModalOpen(true);
+					antdMessage.error('Unable to create new todo');
+				},
+			},
+		);
+	};
+
 	const handleOk = () => {
 		form.submit();
 	};
