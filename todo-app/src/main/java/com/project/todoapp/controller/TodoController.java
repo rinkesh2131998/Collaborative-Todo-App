@@ -3,7 +3,7 @@ package com.project.todoapp.controller;
 import com.project.todoapp.dto.CreateTodo;
 import com.project.todoapp.dto.TodoResource;
 import com.project.todoapp.dto.UpdateTodo;
-import com.project.todoapp.service.TodoService;
+import com.project.todoapp.service.todo.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

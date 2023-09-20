@@ -1,4 +1,4 @@
-package com.project.todoapp.service;
+package com.project.todoapp.service.todo;
 
 import com.project.todoapp.dto.CreateTodo;
 import com.project.todoapp.dto.TodoResource;
