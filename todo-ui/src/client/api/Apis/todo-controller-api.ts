@@ -142,6 +142,35 @@ export const TodoControllerApiAxiosParamCreator = function (configuration?: Conf
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEvents: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/todo/events`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} uuid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -264,6 +293,15 @@ export const TodoControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEvents(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<object>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEvents(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @param {string} uuid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -323,6 +361,14 @@ export const TodoControllerApiFactory = function (configuration?: Configuration,
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEvents(options?: any): AxiosPromise<Array<object>> {
+            return localVarFp.getEvents(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {string} uuid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -376,6 +422,14 @@ export interface TodoControllerApiInterface {
      * @memberof TodoControllerApiInterface
      */
     getAllTodos(options?: AxiosRequestConfig): AxiosPromise<Array<TodoResource>>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TodoControllerApiInterface
+     */
+    getEvents(options?: AxiosRequestConfig): AxiosPromise<Array<object>>;
 
     /**
      * 
@@ -437,6 +491,16 @@ export class TodoControllerApi extends BaseAPI implements TodoControllerApiInter
      */
     public getAllTodos(options?: AxiosRequestConfig) {
         return TodoControllerApiFp(this.configuration).getAllTodos(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TodoControllerApi
+     */
+    public getEvents(options?: AxiosRequestConfig) {
+        return TodoControllerApiFp(this.configuration).getEvents(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

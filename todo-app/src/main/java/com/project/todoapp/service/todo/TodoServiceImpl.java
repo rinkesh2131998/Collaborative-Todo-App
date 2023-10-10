@@ -3,10 +3,10 @@ package com.project.todoapp.service.todo;
 import com.project.todoapp.dto.CreateTodo;
 import com.project.todoapp.dto.TodoResource;
 import com.project.todoapp.dto.UpdateTodo;
-import com.project.todoapp.dto.event.TodoDeleted;
-import com.project.todoapp.dto.event.TodoSavedUpdated;
+import com.project.todoapp.dto.event.Event;
 import com.project.todoapp.entity.Todo;
 import com.project.todoapp.enums.NotificationEventTopic;
+import com.project.todoapp.enums.TodoEventType;
 import com.project.todoapp.exception.ConcurrentModificationException;
 import com.project.todoapp.exception.TodoItemNotFoundException;
 import com.project.todoapp.repository.TodoRepository;
@@ -72,17 +72,19 @@ public class TodoServiceImpl implements TodoService {
   }
 
   @Override
-  public Flux<TodoSavedUpdated> listenSaveAndUpdateEvents() {
-    return notificationService.listen(NotificationEventTopic.TODO_SAVED, Todo.class)
-        .map(item -> convertToDto((Todo) item))
-        .map(item -> new TodoSavedUpdated((TodoResource) item));
+  public Flux<Event> listenSaveAndUpdateEvents() {
+    return notificationService.listen(NotificationEventTopic.TODO_SAVED)
+        .map(this::convertToDto)
+        .map(item -> Event.builder().todoEventType(TodoEventType.TODO_UPDATE).todoResource(item)
+            .build());
   }
 
   @Override
-  public Flux<TodoDeleted> listenDeletedTodos() {
-    return notificationService.listen(NotificationEventTopic.TODO_DELETED, Todo.class)
-        .map(item -> ((Todo) item).getTodoId().toString())
-        .map(item -> new TodoDeleted(item.toString()));
+  public Flux<Event> listenDeletedTodos() {
+    return notificationService.listen(NotificationEventTopic.TODO_DELETED)
+        .map(this::convertToDto)
+        .map(item -> Event.builder().todoEventType(TodoEventType.TODO_DELETE).todoResource(item)
+            .build());
   }
 
   private TodoResource convertToDto(final Todo todo) {

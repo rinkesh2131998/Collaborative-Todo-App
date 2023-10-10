@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.project.todoapp.entity.Todo;
 import com.project.todoapp.enums.NotificationEventTopic;
 import com.project.todoapp.exception.PostgresNotificationException;
 import io.r2dbc.postgresql.api.PostgresqlConnection;
@@ -26,7 +27,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Data
 @Service
-public class NotificationServiceImpl<T> implements NotificationService<T> {
+public class NotificationServiceImpl implements NotificationService {
   private final ConnectionFactory connectionFactory;
   private final ObjectMapper objectMapper = new ObjectMapper()
       .registerModule(new JavaTimeModule())
@@ -43,7 +44,7 @@ public class NotificationServiceImpl<T> implements NotificationService<T> {
   }
 
   @Override
-  public Flux<T> listen(final NotificationEventTopic topic, final Class<T> clazz) {
+  public Flux<Todo> listen(final NotificationEventTopic topic) {
     log.info("Adding listening on topic: [{}] for postgres events", topic);
     if (!watchedTopics.contains(topic)) {
       synchronized (watchedTopics) {
@@ -58,7 +59,7 @@ public class NotificationServiceImpl<T> implements NotificationService<T> {
             notification.getParameter()))
         .handle((notification, sink) -> {
           try {
-            sink.next(objectMapper.readValue(notification.getParameter(), clazz));
+            sink.next(objectMapper.readValue(notification.getParameter(), Todo.class));
           } catch (final Exception exception) {
             final String errorMessage =
                 String.format("Unable to listen to topic: %s, cause: %s", topic,

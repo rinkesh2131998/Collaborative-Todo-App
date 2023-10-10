@@ -3,9 +3,7 @@ package com.project.todoapp.controller;
 import com.project.todoapp.dto.CreateTodo;
 import com.project.todoapp.dto.TodoResource;
 import com.project.todoapp.dto.UpdateTodo;
-import com.project.todoapp.dto.event.Events;
-import com.project.todoapp.dto.event.TodoDeleted;
-import com.project.todoapp.dto.event.TodoSavedUpdated;
+import com.project.todoapp.dto.event.Event;
 import com.project.todoapp.service.todo.TodoService;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
@@ -83,14 +81,12 @@ public class TodoController {
   }
 
   @GetMapping("/events")
-  public Flux<ServerSentEvent<Events>> getEvents() {
-    final Flux<TodoSavedUpdated> todoSavedUpdatedFlux = todoService.listenSaveAndUpdateEvents();
-    final Flux<TodoDeleted> todoDeletedFlux = todoService.listenDeletedTodos();
-
-    return Flux.merge(todoSavedUpdatedFlux, todoDeletedFlux)
-        .map(event -> ServerSentEvent.<Events>builder()
+  public Flux<ServerSentEvent<Event>> getEvents() {
+    return Flux.merge(todoService.listenSaveAndUpdateEvents(), todoService.listenDeletedTodos())
+        .log()
+        .map(event -> ServerSentEvent.<Event>builder()
             .retry(Duration.ofSeconds(1L))
-            .event(event.getClass().getSimpleName())
+            .event(event.todoEventType().name())
             .data(event).build()
         );
   }

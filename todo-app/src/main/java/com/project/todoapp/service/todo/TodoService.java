@@ -3,8 +3,7 @@ package com.project.todoapp.service.todo;
 import com.project.todoapp.dto.CreateTodo;
 import com.project.todoapp.dto.TodoResource;
 import com.project.todoapp.dto.UpdateTodo;
-import com.project.todoapp.dto.event.TodoDeleted;
-import com.project.todoapp.dto.event.TodoSavedUpdated;
+import com.project.todoapp.dto.event.Event;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -61,12 +60,12 @@ public interface TodoService {
    *
    * @return complete to-do resource.
    */
-  Flux<TodoSavedUpdated> listenSaveAndUpdateEvents();
+  Flux<Event> listenSaveAndUpdateEvents();
 
   /**
    * used to listen to deleted todos.
    *
    * @return uuid for the deleted to-do
    */
-  Flux<TodoDeleted> listenDeletedTodos();
+  Flux<Event> listenDeletedTodos();
 }

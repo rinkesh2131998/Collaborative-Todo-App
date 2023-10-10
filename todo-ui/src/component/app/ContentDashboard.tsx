@@ -15,6 +15,7 @@ import useUpdateTodo from '../hooks/useUpdateTodo';
 import { Columns } from '../../typing/app';
 import { TodoResource } from '../../client/api';
 import { mapColumnKeyToTodoStatus, mapTodoStatusToColumnKey } from '../../util/util';
+import EventListener from './EventListener';
 
 const todoColumns: Columns = {
 	todo: {
@@ -173,6 +174,10 @@ const ContentDashboard: React.FC<IProps> = ({ isModalOpen, setIsModalOpen, refre
 				onTodoReceived={handleTodoReceived}
 				isModalOpen={isModalOpen}
 				setIsModalOpen={setIsModalOpen}
+			/>
+			<EventListener
+				removeTodoFromColumn={removeTodoFromColumn}
+				handleTodoFieldsUpdate={handleTodoFieldsUpdate}
 			/>
 		</div>
 	);
