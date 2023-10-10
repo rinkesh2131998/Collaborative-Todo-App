@@ -3,11 +3,16 @@ package com.project.todoapp.controller;
 import com.project.todoapp.dto.CreateTodo;
 import com.project.todoapp.dto.TodoResource;
 import com.project.todoapp.dto.UpdateTodo;
+import com.project.todoapp.dto.event.Events;
+import com.project.todoapp.dto.event.TodoDeleted;
+import com.project.todoapp.dto.event.TodoSavedUpdated;
 import com.project.todoapp.service.todo.TodoService;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,4 +82,16 @@ public class TodoController {
     return todoService.deleteTodoItem(uuid, version);
   }
 
+  @GetMapping("/events")
+  public Flux<ServerSentEvent<Events>> getEvents() {
+    final Flux<TodoSavedUpdated> todoSavedUpdatedFlux = todoService.listenSaveAndUpdateEvents();
+    final Flux<TodoDeleted> todoDeletedFlux = todoService.listenDeletedTodos();
+
+    return Flux.merge(todoSavedUpdatedFlux, todoDeletedFlux)
+        .map(event -> ServerSentEvent.<Events>builder()
+            .retry(Duration.ofSeconds(1L))
+            .event(event.getClass().getSimpleName())
+            .data(event).build()
+        );
+  }
 }

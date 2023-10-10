@@ -7,8 +7,13 @@ management:
       exposure:
         include: '*'
 
+app-config:
+  database-name: todo-app
+  database-host: localhost
+  database-port: 5432
+
 database:
-  url: postgresql://localhost:5432/todo-app
+  url: postgresql://${app-config.database-host}:${app-config.database-port}/${app-config.database-name}
   username: admin
   password: admin
 

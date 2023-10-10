@@ -3,10 +3,14 @@ package com.project.todoapp.service.todo;
 import com.project.todoapp.dto.CreateTodo;
 import com.project.todoapp.dto.TodoResource;
 import com.project.todoapp.dto.UpdateTodo;
+import com.project.todoapp.dto.event.TodoDeleted;
+import com.project.todoapp.dto.event.TodoSavedUpdated;
 import com.project.todoapp.entity.Todo;
+import com.project.todoapp.enums.NotificationEventTopic;
 import com.project.todoapp.exception.ConcurrentModificationException;
 import com.project.todoapp.exception.TodoItemNotFoundException;
 import com.project.todoapp.repository.TodoRepository;
+import com.project.todoapp.service.notification.NotificationService;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -25,6 +29,7 @@ import reactor.core.publisher.Mono;
 public class TodoServiceImpl implements TodoService {
 
   private final TodoRepository todoRepository;
+  private final NotificationService notificationService;
 
   @Override
   public Mono<TodoResource> createNewTodo(final CreateTodo createTodo) {
@@ -64,6 +69,20 @@ public class TodoServiceImpl implements TodoService {
         .switchIfEmpty(Mono.error(
             new TodoItemNotFoundException(String.format("Unable to find todo with id: %s", uuid))))
         .flatMap(todoRepository::delete);
+  }
+
+  @Override
+  public Flux<TodoSavedUpdated> listenSaveAndUpdateEvents() {
+    return notificationService.listen(NotificationEventTopic.TODO_SAVED, Todo.class)
+        .map(item -> convertToDto((Todo) item))
+        .map(item -> new TodoSavedUpdated((TodoResource) item));
+  }
+
+  @Override
+  public Flux<TodoDeleted> listenDeletedTodos() {
+    return notificationService.listen(NotificationEventTopic.TODO_DELETED, Todo.class)
+        .map(item -> ((Todo) item).getTodoId().toString())
+        .map(item -> new TodoDeleted(item.toString()));
   }
 
   private TodoResource convertToDto(final Todo todo) {
