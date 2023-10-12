@@ -4,7 +4,9 @@ import com.project.todoapp.dto.CreateTodo;
 import com.project.todoapp.dto.TodoResource;
 import com.project.todoapp.dto.UpdateTodo;
 import com.project.todoapp.dto.event.Event;
+import com.project.todoapp.enums.TodoEventType;
 import com.project.todoapp.service.todo.TodoService;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -80,7 +82,10 @@ public class TodoController {
 
   @GetMapping("/events")
   public Flux<Event> getEvents() {
-    return Flux.merge(todoService.listenSaveAndUpdateEvents(), todoService.listenDeletedTodos())
+    final Flux<Event> hearbeatFlux = Flux.interval(Duration.ofSeconds(5))
+        .map(interval -> Event.builder().todoEventType(TodoEventType.HEARTBEAT).build());
+    return Flux.merge(todoService.listenSaveEvents(), todoService.listenDeletedTodos(),
+            todoService.listenUpdateEvents(), hearbeatFlux)
         .log();
   }
 }

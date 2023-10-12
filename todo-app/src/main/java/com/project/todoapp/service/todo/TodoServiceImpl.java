@@ -72,8 +72,16 @@ public class TodoServiceImpl implements TodoService {
   }
 
   @Override
-  public Flux<Event> listenSaveAndUpdateEvents() {
+  public Flux<Event> listenSaveEvents() {
     return notificationService.listen(NotificationEventTopic.TODO_SAVED)
+        .map(this::convertToDto)
+        .map(item -> Event.builder().todoEventType(TodoEventType.TODO_SAVE).todoResource(item)
+            .build());
+  }
+
+  @Override
+  public Flux<Event> listenUpdateEvents() {
+    return notificationService.listen(NotificationEventTopic.TODO_UPDATED)
         .map(this::convertToDto)
         .map(item -> Event.builder().todoEventType(TodoEventType.TODO_UPDATE).todoResource(item)
             .build());

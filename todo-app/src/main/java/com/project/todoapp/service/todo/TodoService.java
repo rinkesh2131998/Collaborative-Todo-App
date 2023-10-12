@@ -56,11 +56,18 @@ public interface TodoService {
   Mono<Void> deleteTodoItem(String uuid, long version);
 
   /**
-   * used to listen to save and update events from db.
+   * used to listen to save events from db.
    *
    * @return complete to-do resource.
    */
-  Flux<Event> listenSaveAndUpdateEvents();
+  Flux<Event> listenSaveEvents();
+
+  /**
+   * used to listen to update events.
+   *
+   * @return to-do-resource updated
+   */
+  Flux<Event> listenUpdateEvents();
 
   /**
    * used to listen to deleted todos.
