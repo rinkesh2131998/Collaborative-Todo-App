@@ -11,12 +11,11 @@ import useCreateTodo from '../hooks/useCreateTodo';
 
 interface IProps {
 	form: FormInstance<any>;
-	onTodoReceived: (todo: TodoResource) => void;
 	isModalOpen: boolean;
 	setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddTodoModal: React.FC<IProps> = ({ form, onTodoReceived, isModalOpen, setIsModalOpen }) => {
+const AddTodoModal: React.FC<IProps> = ({ form, isModalOpen, setIsModalOpen }) => {
 	const createTodo = useCreateTodo();
 
 	const handleFinish = (values: any) => {
@@ -31,7 +30,6 @@ const AddTodoModal: React.FC<IProps> = ({ form, onTodoReceived, isModalOpen, set
 					form.resetFields();
 					setIsModalOpen(false);
 					antdMessage.success('Successfully created new todo');
-					onTodoReceived(response.data);
 				},
 				onError: () => {
 					setIsModalOpen(true);

@@ -18,11 +18,9 @@ interface IProps {
 	key: string;
 	todoResource: TodoResource;
 	index: number;
-	removeTodoFromColumn: (todoId: string, columnId: keyof Columns) => void;
-	onTodoReceived: (todo: TodoResource) => void;
 }
 
-const TodoCard: React.FC<IProps> = ({ todoResource, index, removeTodoFromColumn, onTodoReceived }) => {
+const TodoCard: React.FC<IProps> = ({ todoResource, index}) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const deleteTodo = useDeleteTodo();
 
@@ -32,7 +30,6 @@ const TodoCard: React.FC<IProps> = ({ todoResource, index, removeTodoFromColumn,
 			{
 				onSuccess: () => {
 					message.success('Deleted todo');
-					removeTodoFromColumn(todoResource.id, mapTodoStatusToColumnKey(todoResource.status));
 				},
 				onError: () => {
 					message.error('Unable to delete todo');
@@ -70,7 +67,6 @@ const TodoCard: React.FC<IProps> = ({ todoResource, index, removeTodoFromColumn,
 				isModalOpen={isModalOpen}
 				setIsModalOpen={setIsModalOpen}
 				todo={todoResource}
-				onTodoReceived={onTodoReceived}
 			/>
 		</>
 	);

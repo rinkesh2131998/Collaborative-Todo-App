@@ -10,12 +10,11 @@ import useUpdateTodo from '../hooks/useUpdateTodo';
 
 interface IProps {
 	todo: TodoResource;
-	onTodoReceived: (todo: TodoResource) => void;
 	isModalOpen: boolean;
 	setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const UpdateTodoModal: React.FC<IProps> = ({ todo, onTodoReceived, isModalOpen, setIsModalOpen }) => {
+const UpdateTodoModal: React.FC<IProps> = ({ todo, isModalOpen, setIsModalOpen }) => {
 	const [form] = Form.useForm();
 	const updateTodo = useUpdateTodo();
 
@@ -33,7 +32,6 @@ const UpdateTodoModal: React.FC<IProps> = ({ todo, onTodoReceived, isModalOpen, 
 					form.resetFields();
 					setIsModalOpen(false);
 					antdMessage.success('Updated Todo');
-					onTodoReceived(data);
 				},
 				onError: () => {
 					antdMessage.error('Unable to update todo');

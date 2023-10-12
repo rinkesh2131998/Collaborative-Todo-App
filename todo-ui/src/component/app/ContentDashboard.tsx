@@ -10,12 +10,12 @@ import { Form, Typography, message as antdMessage } from 'antd';
 
 import AddTodoModal from '../modal/AddTodoModal';
 import DynamicTodo from './DynamicTodo';
+import EventListener from './EventListener';
 import TodoCard from './TodoCard';
 import useUpdateTodo from '../hooks/useUpdateTodo';
 import { Columns } from '../../typing/app';
 import { TodoResource } from '../../client/api';
 import { mapColumnKeyToTodoStatus, mapTodoStatusToColumnKey } from '../../util/util';
-import EventListener from './EventListener';
 
 const todoColumns: Columns = {
 	todo: {
@@ -157,8 +157,6 @@ const ContentDashboard: React.FC<IProps> = ({ isModalOpen, setIsModalOpen, refre
 												key={item.id}
 												todoResource={item}
 												index={index}
-												removeTodoFromColumn={removeTodoFromColumn}
-												onTodoReceived={handleTodoFieldsUpdate}
 											/>
 										))}
 										{provided.placeholder}
@@ -169,13 +167,9 @@ const ContentDashboard: React.FC<IProps> = ({ isModalOpen, setIsModalOpen, refre
 					</div>
 				</div>
 			</DragDropContext>
-			<AddTodoModal
-				form={form}
-				onTodoReceived={handleTodoReceived}
-				isModalOpen={isModalOpen}
-				setIsModalOpen={setIsModalOpen}
-			/>
+			<AddTodoModal form={form} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
 			<EventListener
+				handleTodoSaved={handleTodoReceived}
 				removeTodoFromColumn={removeTodoFromColumn}
 				handleTodoFieldsUpdate={handleTodoFieldsUpdate}
 			/>

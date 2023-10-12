@@ -82,7 +82,7 @@ public class TodoController {
 
   @GetMapping("/events")
   public Flux<Event> getEvents() {
-    final Flux<Event> hearbeatFlux = Flux.interval(Duration.ofSeconds(5))
+    final Flux<Event> hearbeatFlux = Flux.interval(Duration.ofSeconds(15))
         .map(interval -> Event.builder().todoEventType(TodoEventType.HEARTBEAT).build());
     return Flux.merge(todoService.listenSaveEvents(), todoService.listenDeletedTodos(),
             todoService.listenUpdateEvents(), hearbeatFlux)

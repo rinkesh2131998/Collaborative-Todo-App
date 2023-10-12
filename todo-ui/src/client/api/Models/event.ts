@@ -38,6 +38,7 @@ export interface Event {
 }
 
 export const EventTodoEventTypeEnum = {
+    TodoSave: 'TODO_SAVE',
     TodoUpdate: 'TODO_UPDATE',
     TodoDelete: 'TODO_DELETE',
     Heartbeat: 'HEARTBEAT'
