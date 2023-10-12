@@ -6,7 +6,7 @@
 import React, { useEffect } from 'react';
 
 import { LISTEN_TO_TODO_EVENTS_ENDPOINT } from '../../config/application-config';
-import { TodoResource } from '../../client/api';
+import { Event, EventTodoEventTypeEnum, TodoResource } from '../../client/api';
 import { Columns } from '../../typing/app';
 import { mapTodoStatusToColumnKey } from '../../util/util';
 
@@ -18,27 +18,22 @@ interface IProps {
 }
 
 const EventListener: React.FC<IProps> = ({ removeTodoFromColumn, handleTodoFieldsUpdate }) => {
-	const handleUpdate = (todo: TodoResource) => {
-		// handleTodoFieldsUpdate(todo);
-		console.log(todo);
-	};
-
-	const handleDelete = (todo: TodoResource) => {
-		// removeTodoFromColumn(todo.id, mapTodoStatusToColumnKey(todo.status));
-		console.log(todo);
+	const handleEvents = (event: Event) => {
+		if (event.todoResource?.id) {
+			if (event.todoEventType === EventTodoEventTypeEnum.TodoDelete) {
+				removeTodoFromColumn(event.todoResource?.id, mapTodoStatusToColumnKey(event.todoResource?.status));
+			} else if (event.todoEventType === EventTodoEventTypeEnum.TodoUpdate) {
+				handleTodoFieldsUpdate(event.todoResource);
+			}
+		}
 	};
 
 	useEffect(() => {
 		const eventSource = new EventSource(LISTEN_TO_TODO_EVENTS_ENDPOINT);
 
 		eventSource.onmessage = (event) => {
-			const todoEvent = JSON.parse(event.data);
-			const todo: TodoResource = todoEvent.todoResource;
-			if (event.type === 'TODO_UPDATE') {
-				handleUpdate(todo);
-			} else if (event.type === 'TODO_DELETE') {
-				handleDelete(todo);
-			}
+			const todoEvent: Event = JSON.parse(event.data);
+			handleEvents(todoEvent);
 		};
 
 		eventSource.onerror = (error: any) => {

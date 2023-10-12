@@ -2,6 +2,7 @@
 .npmignore
 Apis/todo-controller-api.ts
 Models/create-todo.ts
+Models/event.ts
 Models/index.ts
 Models/todo-resource.ts
 Models/update-todo.ts

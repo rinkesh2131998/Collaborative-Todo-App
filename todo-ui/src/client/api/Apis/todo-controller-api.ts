@@ -24,6 +24,8 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 // @ts-ignore
 import { CreateTodo } from '../Models';
 // @ts-ignore
+import { Event } from '../Models';
+// @ts-ignore
 import { TodoResource } from '../Models';
 // @ts-ignore
 import { UpdateTodo } from '../Models';
@@ -296,7 +298,7 @@ export const TodoControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEvents(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<object>>> {
+        async getEvents(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Event>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getEvents(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -364,7 +366,7 @@ export const TodoControllerApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEvents(options?: any): AxiosPromise<Array<object>> {
+        getEvents(options?: any): AxiosPromise<Array<Event>> {
             return localVarFp.getEvents(options).then((request) => request(axios, basePath));
         },
         /**
@@ -429,7 +431,7 @@ export interface TodoControllerApiInterface {
      * @throws {RequiredError}
      * @memberof TodoControllerApiInterface
      */
-    getEvents(options?: AxiosRequestConfig): AxiosPromise<Array<object>>;
+    getEvents(options?: AxiosRequestConfig): AxiosPromise<Array<Event>>;
 
     /**
      * 
